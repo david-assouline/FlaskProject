@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, jsonify
+from flask import Blueprint, render_template, request, flash, jsonify, redirect
 from flask_login import login_required, current_user
 from .models import Note
 from . import db
@@ -6,8 +6,16 @@ import json
 
 views = Blueprint('views', __name__)
 
+@views.route("/")
+def main():
+    if current_user.is_authenticated:
+        return redirect("/home", code=302)
+    else:
+        return redirect("/login", code=302)
 
-@views.route('/', methods=["GET", "POST"])
+
+
+@views.route('/home', methods=["GET", "POST"])
 @login_required
 def home():
     if request.method == "POST":
